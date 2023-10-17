@@ -1,0 +1,37 @@
+.app-container{
+    border: white 2px solid;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+}
+
+.pokemon-details-container {
+    border: green 2px solid;
+    width: 400px;
+    height: 550px;
+
+}
+.pokemons-container{
+    height:550px;
+    border: red 2px solid;
+    overflow: auto;
+}
+
+
+/* For Webkit-based browsers (Chrome, Safari) */
+.pokemons-container::-webkit-scrollbar {
+    width: 0.2em; /* Set the width of the scrollbar to a very thin value */
+}
+
+.pokemons-container::-webkit-scrollbar-thumb {
+    background-color: transparent; /* Set scrollbar thumb color to transparent */
+}
+.pokemon-card{
+    margin: 10px;
+    padding: 10px;
+    width: 500px;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    border: blue 2px solid;
+}
+
