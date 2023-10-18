@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import {RouterProvider, createHashRouter} from "react-router-dom";
+import {RouterProvider, createHashRouter, Navigate} from "react-router-dom";
 import SplashScreen from "./routes/SplashScreen";
 import App from "./routes/App";
 import Home from "./routes/Home";
@@ -19,11 +19,15 @@ const router = createHashRouter([
         element: <App/>,
         children: [
             {
-                path: '/app/home',
+              index: true,
+              element : <Navigate to={"home"}/>
+            },
+            {
+                path: 'home',
                 element: <Home/>
             },
             {
-                path: '/app/about-us',
+                path: 'about-us',
                 element: <About/>
             }
 

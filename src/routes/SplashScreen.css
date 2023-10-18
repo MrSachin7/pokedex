@@ -23,4 +23,10 @@
     border-radius: 5px; /* Rounded borders */
     padding: 10px 20px; /* Add padding to the button */
     cursor: pointer; /* Add cursor pointer on hover */
+    transition: all 0.3s ease-in-out; /* Add transition effect */
+}
+
+.start-button:hover {
+    background: linear-gradient(to right, #2d4596, #fec10c); /* Linear gradient background */
+    border : 1px solid white;
 }
