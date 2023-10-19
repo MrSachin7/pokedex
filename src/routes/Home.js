@@ -1,32 +1,14 @@
 import "./Home.css"
-import {useQuery} from "@tanstack/react-query";
+import {useInfiniteQuery, useQuery} from "@tanstack/react-query";
 import {fetchData, fetchPokemonPage} from "../api/pokemon";
 import {getAverageRGBA, getContrastColor} from "../utils/colorCalculator";
 import {useEffect, useState} from "react";
 
 function Home() {
-    const pokemonPageQuery = useQuery({
-        queryKey: ["pokemonPage"],
-        queryFn: fetchPokemonPage
-    });
 
-    if (pokemonPageQuery.isLoading) return <LoadingComponent/>;
-    if (pokemonPageQuery.isError) return <ErrorComponent error={pokemonPageQuery.error}/>;
-
-    const pokemonList = pokemonPageQuery.data.data.results;
     return <div className={"app-container"}>
-        <div className={"pokemons-container"}>
-            <PokemonListComponent pokemons={pokemonList}/>
-        </div>
-
-        <div className={"pokemon-details-container"}>
-            <div className={"details"}>
-                <div className={"stats"}></div>
-            </div>
-            <div className={"stats"}></div>
-
-        </div>
-
+        <PokemonListComponent/>
+        <PokemonDetailsContainer/>
     </div>
 
 }
@@ -39,10 +21,45 @@ function ErrorComponent({error}) {
     return <h1> {JSON.stringify(error)}</h1>
 }
 
-function PokemonListComponent({pokemons}) {
-    return pokemons.map(pokemon => {
-        return <PokemonElement key={pokemon.id} pokemon={pokemon}/>
-    })
+function PokemonListComponent() {
+
+    const {data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage}
+        = useInfiniteQuery({
+            queryKey: ["pokemonPage"],
+            queryFn: fetchPokemonPage,
+            getNextPageParam: (lastPage, pages) => {
+                if (lastPage.data.next) {
+                    console.log("returning next page");
+                    return pages.length + 1;
+                }
+                console.log("returning undefined");
+                return undefined;
+            }
+        }
+    );
+    if (isLoading) return <LoadingComponent/>;
+    if (isError) return <ErrorComponent error={error}/>;
+
+    const pokemons = data.pages.flatMap((page) => page.data.results);
+
+    console.log("pages");
+    console.log(data);
+    console.log(pokemons);
+
+    return <div className={"pokemons-container"}>
+        <div>
+
+            {pokemons?.map((pokemon) => {
+                return <PokemonElement key={pokemon.id} pokemon={pokemon}/>
+            })}
+            <button className={"load-more"} onClick={fetchNextPage} disabled={!hasNextPage || isFetchingNextPage}>
+                Load More...
+            </button>
+        </div>
+
+    </div>
+
+
 }
 
 function PokemonElement({pokemon}) {
@@ -58,33 +75,53 @@ function PokemonElement({pokemon}) {
         if (pokemonQuery.isLoading) return;
         if (pokemonQuery.isError) return;
 
-        const pokemonData = pokemonQuery.data.data;
-        console.log(pokemonData);
-
-        getAverageRGBA(pokemonData.sprites.front_default).then((averageColour) => {
-           const contrastColor= getContrastColor(averageColour);
+        getAverageRGBA(pokemonQuery.data.data.sprites.front_default).then((averageColour) => {
+            const contrastColor = getContrastColor(averageColour);
+            console.log(contrastColor);
             setColor({
                 contrastColor: `rgb(${contrastColor.r}, ${contrastColor.g}, ${contrastColor.b}`,
                 backgroundColor: `rgba(${averageColour.r}, ${averageColour.g}, ${averageColour.b}, ${averageColour.a})`
             });
         });
-    }, [pokemonQuery]);
-
+    }, [pokemonQuery.data]);
     if (pokemonQuery.isLoading) return;
     if (pokemonQuery.isError) return;
 
     const pokemonData = pokemonQuery.data.data;
-    console.log(pokemonData);
 
-    return <div key={pokemon.id} className={"pokemon-card"} style={{backgroundColor: color.backgroundColor, color : color.contrastColor}}>
-        <div className={"pokemon-image"}>
-            <img src={pokemonData.sprites.front_default} alt={pokemonData.name}/>
+
+    return <div key={pokemon.id} className={"pokemon-card"}
+                style={{backgroundColor: color.backgroundColor, color: color.contrastColor}}>
+        <div>
+            <img className={"pokemon-image"} src={pokemonData.sprites.front_default} alt={pokemonData.name}/>
         </div>
         <div className={"pokemon-name"}>
             {pokemonData.name}
         </div>
         <div className={"pokemon-id"}>
             #{pokemonData.id}
+        </div>
+    </div>
+
+}
+
+function PokemonDetailsContainer() {
+    return <div className={"pokemon-details-container"}>
+        <div className={"details"}>
+            <div className={"details-id"}>
+                Id here
+            </div>
+            <div className={"details-image"}>
+                Image here
+            </div>
+            <div className={"details-name"}>
+                Bulbasaur
+            </div>
+
+        </div>
+        <div className={"stats"}>
+            Stats goes here..
+
         </div>
     </div>
 

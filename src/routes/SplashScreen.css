@@ -29,4 +29,5 @@
 .start-button:hover {
     background: linear-gradient(to right, #2d4596, #fec10c); /* Linear gradient background */
     border : 1px solid white;
+    transform: scale(1.2);
 }

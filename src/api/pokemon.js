@@ -1,8 +1,9 @@
 import axios from "axios";
 
- function fetchPokemonPage() {
+ function fetchPokemonPage({pageParam =1}) {
+     console.log("Fetching......"+ pageParam);
     let pokemonsPerPage = 20;
-    let offset = 0;
+    let offset = (pageParam - 1) * pokemonsPerPage;
     let url =`https://pokeapi.co/api/v2/pokemon?limit=${pokemonsPerPage}&offset=${offset}`;
     return fetchData(url);
 }

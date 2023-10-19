@@ -1,7 +1,7 @@
 body {
   background-image: url("images/pokemon_wallpaper.jpg");
   background-size: cover;
-  background-repeat: revert;
+  background-repeat: repeat;
   font-family: Pokemon, serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

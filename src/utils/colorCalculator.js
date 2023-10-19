@@ -20,7 +20,7 @@ async function getAverageRGBA(imagePath, lightenFactor = 8, transparency = 0.7) 
     let pixelCount = 0;
 
     // Iterate over the image data in steps of 20 (5 pixels * 4 color channels)
-    for (let i = 0; i < data.length; i += 100) {
+    for (let i = 0; i < data.length; i += 20) {
         totalRed += data[i];
         totalGreen += data[i + 1];
         totalBlue += data[i + 2];
